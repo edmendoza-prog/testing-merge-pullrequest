@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booking - Desktop Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            overflow-x: hidden;
+        }
+
+        /* Sync Banner */
+        .sync-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            animation: slideDown 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sync-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .check-icon-banner {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #3b82f6;
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 32px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-icon {
+            width: 20px;
+            height: 20px;
+            color: #3b82f6;
+        }
+
+        /* Dashboard Grid */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background: #f1f5f9;
+            color: #3b82f6;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .sidebar-item.active .step-number {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            animation: slideUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .badge.success {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        /* Saved Flights */
+        .saved-flights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 16px;
+        }
+
+        .flight-card-desktop {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .flight-card-desktop:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .flight-card-desktop.selected {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: #3b82f6;
+        }
+
+        .saved-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #ef4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .airline-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .airline-info-desktop {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .airline-logo-desktop {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
+
+        .airline-name-desktop {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .flight-number {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .price-desktop {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .flight-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .route-point {
+            text-align: center;
+        }
+
+        .route-time {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .route-code {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .route-line {
+            flex: 1;
+            margin: 0 20px;
+            position: relative;
+            height: 2px;
+            background: linear-gradient(90deg, #cbd5e1, #3b82f6, #cbd5e1);
+        }
+
+        .route-duration {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #64748b;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .comparison-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .table-airline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .table-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .table-price {
+            font-weight: 700;
+            color: #3b82f6;
+            font-size: 16px;
+        }
+
+        .select-btn {
+            padding: 8px 16px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .select-btn.selected {
+            background: #10b981;
+        }
+
+        /* Form Sections */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Seat Selection */
+        .seat-map {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            max-width: 480px;
+        }
+
+        .seat {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .seat:hover {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        .seat.occupied {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .seat.occupied:hover {
+            transform: none;
+        }
+
+        .seat.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .seat-legend {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .legend-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .legend-box.available {
+            background: white;
+        }
+
+        .legend-box.occupied {
+            background: #f1f5f9;
+        }
+
+        .legend-box.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Payment Section */
+        .payment-summary {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 15px;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #e2e8f0;
+            margin-top: 12px;
+            padding-top: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .summary-label {
+            color: #64748b;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payment-method:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .payment-method.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .checkout-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sync Banner -->
+    <div class="sync-banner">
+        <div class="check-icon-banner">✓</div>
+        <span>Mobile data restored successfully.</span>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                ✈️ SkyBooker Pro
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#">My Trips</a></li>
+                    <li><a href="#">Check-in</a></li>
+                    <li><a href="#">Flight Status</a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <span style="color: #64748b; font-size: 14px;">John Doe</span>
+                <div class="user-avatar">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome Back!</h1>
+            <p class="welcome-subtitle">
+                <svg class="mobile-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+                We found <span id="savedFlightCount" style="font-weight: 600; color: #3b82f6;">3 flights</span> saved from your mobile device.
+            </p>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Booking Steps</div>
+                    <div class="sidebar-item active">
+                        <span class="step-number">1</span>
+                        <span>Select Flight</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="step-number">2</span>
+                        <span>Passenger Info</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="step-number">3</span>
+                        <span>Choose Seat</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="step-number">4</span>
+                        <span>Payment</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-title">Trip Summary</div>
+                    <div style="padding: 12px; font-size: 13px; color: #64748b;">
+                        <div style="margin-bottom: 8px;">
+                            <strong style="color: #0f172a;">Route:</strong> JFK → LAX
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong style="color: #0f172a;">Date:</strong> Aug 25, 2026
+                        </div>
+                        <div>
+                            <strong style="color: #0f172a;">Passengers:</strong> 1 Adult
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Saved Flights -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Saved Flights from Mobile</h2>
+                        <span class="badge success">3 Saved</span>
+                    </div>
+                    <div class="saved-flights-grid" id="savedFlightsGrid">
+                        <!-- Flights will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Flight Comparison -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Flight Comparison</h2>
+                        <span class="badge">All Flights</span>
+                    </div>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Airline</th>
+                                <th>Departure</th>
+                                <th>Arrival</th>
+                                <th>Duration</th>
+                                <th>Type</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTable">
+                            <!-- Table rows will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Passport Information -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Passenger Information</h2>
+                        <span class="badge">Step 2</span>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-input" placeholder="John" value="John">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-input" placeholder="Doe" value="Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Passport Number</label>
+                            <input type="text" class="form-input" placeholder="123456789">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nationality</label>
+                            <input type="text" class="form-input" placeholder="United States">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-input" value="1990-01-01">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Passport Expiry</label>
+                            <input type="date" class="form-input" value="2030-01-01">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="john.doe@example.com" value="john.doe@example.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" placeholder="+1 (555) 123-4567" value="+1 (555) 123-4567">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seat Selection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Seat Selection</h2>
+                        <span class="badge">Step 3</span>
+                    </div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">Selected Seat:</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #3b82f6;" id="selectedSeat">None</div>
+                    </div>
+                    <div class="seat-map" id="seatMap">
+                        <!-- Seats will be generated dynamically -->
+                    </div>
+                    <div class="seat-legend">
+                        <div class="legend-item">
+                            <div class="legend-box available"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box occupied"></div>
+                            <span>Occupied</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box selected"></div>
+                            <span>Your Selection</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Payment</h2>
+                        <span class="badge">Step 4</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <label class="form-label" style="margin-bottom: 12px; display: block;">Payment Method</label>
+                        <div class="payment-methods">
+                            <div class="payment-method selected" data-method="card">
+                                💳 Credit Card
+                            </div>
+                            <div class="payment-method" data-method="paypal">
+                                🅿️ PayPal
+                            </div>
+                            <div class="payment-method" data-method="crypto">
+                                ₿ Crypto
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="text" class="form-input" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV</label>
+                            <input type="text" class="form-input" placeholder="123" maxlength="3">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Cardholder Name</label>
+                            <input type="text" class="form-input" placeholder="JOHN DOE" value="JOHN DOE">
+                        </div>
+                    </div>
+
+                    <div class="payment-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">Flight Price</span>
+                            <span class="summary-value" id="flightPrice">$289.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Taxes & Fees</span>
+                            <span class="summary-value">$47.50</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Seat Selection</span>
+                            <span class="summary-value" id="seatPrice">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="summary-label">Total Amount</span>
+                            <span class="summary-value" id="totalPrice">$336.50</span>
+                        </div>
+                    </div>
+
+                    <button class="checkout-btn">Complete Booking</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Flight data - simulating data from mobile app
+        const flights = [
+            {
+                id: 1,
+                airline: 'American Airlines',
+                code: 'AA',
+                flightNumber: 'AA 1234',
+                departure: '08:30',
+                arrival: '11:15',
+                departureCode: 'JFK',
+                arrivalCode: 'LAX',
+                duration: '5h 45m',
+                price: 289,
+                type: 'Non-stop',
+                saved: true,
+                color: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+            },
+            {
+                id: 2,
+                airline: 'United Airlines',
+                code: 'UA',
+                flightNumber: 'UA 5678',
+                departure: '12:45',
+                arrival: '15:55',
+                departureCode: 'JFK',
+                arrivalCode: 'LAX',
+                duration: '6h 10m',
+                price: 325,
+                type: 'Non-stop',
+                saved: true,
+                color: 'linear-gradient(135deg, #a78bfa, #8b5cf6)'
+            },
+            {
+                id: 3,
+                airline: 'Delta Airlines',
+                code: 'DL',
+                flightNumber: 'DL 9012',
+                departure: '18:20',
+                arrival: '21:10',
+                departureCode: 'JFK',
+                arrivalCode: 'LAX',
+                duration: '5h 50m',
+                price: 299,
+                type: 'Non-stop',
+                saved: true,
+                color: 'linear-gradient(135deg, #f59e0b, #d97706)'
+            }
+        ];
+
+        let selectedFlight = null;
+        let selectedSeat = null;
+
+        // Load saved flights
+        function loadSavedFlights() {
+            const grid = document.getElementById('savedFlightsGrid');
+            
+            flights.filter(f => f.saved).forEach(flight => {
+                const card = document.createElement('div');
+                card.className = 'flight-card-desktop';
+                card.dataset.flightId = flight.id;
+                
+                card.innerHTML = `
+                    <div class="saved-badge">❤️ Saved</div>
+                    <div class="airline-row">
+                        <div class="airline-info-desktop">
+                            <div class="airline-logo-desktop" style="background: ${flight.color}">
+                                ${flight.code}
+                            </div>
+                            <div>
+                                <div class="airline-name-desktop">${flight.airline}</div>
+                                <div class="flight-number">${flight.flightNumber}</div>
+                            </div>
+                        </div>
+                        <div class="price-desktop">$${flight.price}</div>
+                    </div>
+                    <div class="flight-route">
+                        <div class="route-point">
+                            <div class="route-time">${flight.departure}</div>
+                            <div class="route-code">${flight.departureCode}</div>
+                        </div>
+                        <div class="route-line">
+                            <div class="route-duration">${flight.duration}</div>
+                        </div>
+                        <div class="route-point">
+                            <div class="route-time">${flight.arrival}</div>
+                            <div class="route-code">${flight.arrivalCode}</div>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => selectFlight(flight.id));
+                grid.appendChild(card);
+            });
+        }
+
+        // Load comparison table
+        function loadComparisonTable() {
+            const tbody = document.getElementById('comparisonTable');
+            
+            flights.forEach(flight => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="table-airline">
+                            <div class="table-logo" style="background: ${flight.color}">
+                                ${flight.code}
+                            </div>
+                            <div>
+                                <div>${flight.airline}</div>
+                                <div style="font-size: 12px; color: #64748b;">${flight.flightNumber}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${flight.departure}<br><span style="font-size: 12px; color: #64748b;">${flight.departureCode}</span></td>
+                    <td>${flight.arrival}<br><span style="font-size: 12px; color: #64748b;">${flight.arrivalCode}</span></td>
+                    <td>${flight.duration}</td>
+                    <td>${flight.type}</td>
+                    <td class="table-price">$${flight.price}</td>
+                    <td>
+                        <button class="select-btn" data-flight-id="${flight.id}">
+                            Select
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Add event listeners to select buttons
+            document.querySelectorAll('.select-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const flightId = parseInt(btn.dataset.flightId);
+                    selectFlight(flightId);
+                });
+            });
+        }
+
+        // Select flight
+        function selectFlight(flightId) {
+            selectedFlight = flights.find(f => f.id === flightId);
+            
+            // Update card selection
+            document.querySelectorAll('.flight-card-desktop').forEach(card => {
+                card.classList.remove('selected');
+                if (parseInt(card.dataset.flightId) === flightId) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Update table buttons
+            document.querySelectorAll('.select-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                btn.textContent = 'Select';
+                if (parseInt(btn.dataset.flightId) === flightId) {
+                    btn.classList.add('selected');
+                    btn.textContent = '✓ Selected';
+                }
+            });
+
+            // Update price
+            document.getElementById('flightPrice').textContent = `$${selectedFlight.price}.00`;
+            updateTotal();
+        }
+
+        // Generate seat map
+        function generateSeatMap() {
+            const seatMap = document.getElementById('seatMap');
+            const rows = 8;
+            const seatsPerRow = 6;
+            const occupiedSeats = [2, 5, 8, 11, 15, 19, 23, 27, 31, 35, 41];
+
+            for (let i = 1; i <= rows * seatsPerRow; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.textContent = i;
+                seat.dataset.seat = i;
+
+                if (occupiedSeats.includes(i)) {
+                    seat.classList.add('occupied');
+                } else {
+                    seat.addEventListener('click', () => selectSeat(i));
+                }
+
+                seatMap.appendChild(seat);
+            }
+        }
+
+        // Select seat
+        function selectSeat(seatNumber) {
+            // Deselect previous seat
+            document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+            
+            // Select new seat
+            const seatElement = document.querySelector(`.seat[data-seat="${seatNumber}"]`);
+            seatElement.classList.add('selected');
+            
+            selectedSeat = seatNumber;
+            document.getElementById('selectedSeat').textContent = `Seat ${seatNumber}`;
+            
+            // Update price (premium seats cost extra)
+            const seatPrice = seatNumber <= 12 ? 35 : 15; // Front seats are more expensive
+            document.getElementById('seatPrice').textContent = `$${seatPrice}.00`;
+            updateTotal();
+        }
+
+        // Update total price
+        function updateTotal() {
+            const flightPrice = selectedFlight ? selectedFlight.price : 289;
+            const taxes = 47.50;
+            const seatPrice = parseFloat(document.getElementById('seatPrice').textContent.replace('$', ''));
+            const total = flightPrice + taxes + seatPrice;
+            document.getElementById('totalPrice').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Checkout button
+        document.querySelector('.checkout-btn').addEventListener('click', function() {
+            if (!selectedFlight) {
+                alert('Please select a flight first!');
+                return;
+            }
+            if (!selectedSeat) {
+                alert('Please select a seat!');
+                return;
+            }
+            
+            // Simulate successful booking
+            this.textContent = '✓ Booking Confirmed!';
+            this.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            setTimeout(() => {
+                alert('🎉 Booking Confirmed!\n\nYour booking has been successfully completed.\n\nConfirmation code: ' + Math.random().toString(36).substr(2, 9).toUpperCase());
+            }, 500);
+        });
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedFlights();
+            loadComparisonTable();
+            generateSeatMap();
+            
+            // Auto-select first flight
+            selectFlight(1);
+            
+            // Update saved flight count
+            document.getElementById('savedFlightCount').textContent = 
+                `${flights.filter(f => f.saved).length} flights`;
+        });
+
+        // Card number formatting
+        document.querySelector('input[placeholder="1234 5678 9012 3456"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        document.querySelector('input[placeholder="MM/YY"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
